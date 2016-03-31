@@ -71,7 +71,7 @@ function removeBlocks() {
 function parseBlocks(data) {
     var lines = data.split("\n");
     var lo = 3;
-    var hi = 300;
+    var hi = parseInt(lines[0].split(",")[2]);
     lines.forEach(function(line) {
         var row = line.split(",");
         var lat = parseFloat(row[0]);
@@ -83,7 +83,7 @@ function parseBlocks(data) {
         var p = (count - lo) / (hi - lo);
         p = Math.min(p, 1);
         p = Math.max(p, 0);
-        p = Math.pow(p, 0.75);
+        p = Math.pow(p, 0.5);
         var alpha = 0.05 + p * 0.75;
         addBlock(lat, lng, alpha);
     });
