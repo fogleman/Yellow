@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Map</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="map"></div>
+    <div id="sidebar">
+        <h3>2015 Yellow Taxi Trips</h3>
+        <p>Click on the map to see the most common destinations for trips originating from that point.</p>
+        <p>The histogram below shows trip frequency by hour of the day for all trips leaving the origin. Hover for details.</p>
+        <p>Powered by open data found <a href="https://data.cityofnewyork.us/view/ba8s-jw6u">here</a>. Over 77 million taxi trips from January to June 2015.</p>
+        <h3>Hourly Frequency</h3>
+        <div id="hours"></div>
+        <h3>More Information</h3>
+        <p>The data was aggregated using Python scripts and stored in flat files for easy and rapid access. The UI is built with Leaflet, d3, jQuery and Bootstrap. The code can be found on GitHub.</p>
+        <p>Created by <a href="https://www.michaelfogleman.com/">Michael Fogleman</a>.</p>
+    </div>
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
