@@ -1,4 +1,7 @@
-var map = L.map('map').setView([40.756, -73.991], 13);
+var initialLat = 40.756;
+var initialLng = -73.991;
+
+var map = L.map('map').setView([initialLat, initialLng], 13);
 
 // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
 // L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}').addTo(map);
@@ -7,11 +10,33 @@ L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
     subdomains: 'abcd',
     maxZoom: 19,
-}).addTo(map);;
+}).addTo(map);
 
 var marker = null;
+var cursor = null;
 var blocks = [];
 var xhr = null;
+
+function createCursor() {
+    var lat = 0;
+    var lng = 0;
+    var s = 0.001 / 2;
+    var bounds = [[lat - s, lng - s], [lat + s, lng + s]];
+    var options = {
+        color: "#000000",
+        weight: 2,
+        opacity: 0.7,
+        fill: false,
+        clickable: false,
+    };
+    cursor = L.rectangle(bounds, options).addTo(map);
+}
+
+function moveCursor(lat, lng) {
+    var s = 0.001 / 2;
+    var bounds = [[lat - s, lng - s], [lat + s, lng + s]];
+    cursor.setBounds(bounds)
+}
 
 function addBlock(lat, lng, alpha) {
     var s = 0.001 / 2;
@@ -27,7 +52,9 @@ function addBlock(lat, lng, alpha) {
 }
 
 function createMarker(lat, lng) {
-    marker = L.marker([lat, lng]).addTo(map);
+    marker = L.marker([lat, lng], {
+        clickable: false,
+    }).addTo(map);
 }
 
 function removeBlocks() {
@@ -92,7 +119,7 @@ function parseHours(data) {
             if (hi === 0) {
                 return "0";
             }
-            var h = (d / hi) * 230;
+            var h = (d / hi) * 200;
             return h + "px";
         })
         ;
@@ -137,9 +164,33 @@ function select(lat, lng) {
     loadBlocks(lat, lng);
 }
 
+function validBlock(lat, lng) {
+    var a = Math.round(lat * 1000);
+    var b = Math.round(-lng * 1000);
+    var key = a + "." + b;
+    return key in BLOCKS;
+}
+
 map.on('click', function(e) {
-    select(e.latlng.lat, e.latlng.lng);
+    var lat = e.latlng.lat;
+    var lng = e.latlng.lng;
+    if (validBlock(lat, lng)) {
+        select(lat, lng);
+    }
 });
 
+map.on('mousemove', function(e) {
+    var lat = Math.round(e.latlng.lat * 1000) / 1000;
+    var lng = Math.round(e.latlng.lng * 1000) / 1000;
+    if (validBlock(lat, lng)) {
+        $("#map").css("cursor", "default");
+        moveCursor(lat, lng);
+    } else {
+        $("#map").css("cursor", "not-allowed");
+        moveCursor(0, 0);
+    }
+});
+
+createCursor();
 parseHours("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
-select(40.756, -73.991);
+select(initialLat, initialLng);
